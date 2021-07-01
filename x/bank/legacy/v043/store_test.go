@@ -33,7 +33,7 @@ func TestSupplyMigration(t *testing.T) {
 	store.Set(v040bank.SupplyKey, oldSupplyBz)
 
 	// Run migration.
-	err = v043bank.MigrateStore(ctx, bankKey, encCfg.Marshaler)
+	err = v043bank.MigrateStore(ctx, bankKey, encCfg.Codec)
 	require.NoError(t, err)
 
 	// New supply is indexed by denom.

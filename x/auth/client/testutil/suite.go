@@ -233,6 +233,7 @@ func (s *IntegrationTestSuite) TestCLISignAminoJSON() {
 	require.Len(txAmino.Tx.Signatures, 2)
 	require.Equal(txAmino.Tx.Signatures[0].PubKey, valInfo.GetPubKey())
 	require.Equal(txAmino.Tx.Signatures[1].PubKey, valInfo.GetPubKey())
+
 }
 
 func checkSignatures(require *require.Assertions, txCfg client.TxConfig, output []byte, pks ...cryptotypes.PubKey) {

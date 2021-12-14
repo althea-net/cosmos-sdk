@@ -7,6 +7,7 @@ import (
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	tmabci "github.com/tendermint/tendermint/abci/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -65,6 +66,11 @@ func (app *BaseApp) RegisterGRPCServer(server gogogrpc.Server) {
 
 		return handler(grpcCtx, req)
 	}
+
+	// Register the ABCIQuery service for all applications
+	querySrv := app.GRPCQueryRouter()
+	queryExecutor := tmabci.NewGRPCApplication(app)
+	sdk.RegisterApplicationQueryServiceServer(querySrv, queryExecutor)
 
 	// Loop through all services and methods, add the interceptor, and register
 	// the service.

@@ -4,11 +4,16 @@
 package types
 
 import (
+	"context"
 	fmt "fmt"
 	types "github.com/cosmos/cosmos-sdk/codec/types"
 	_ "github.com/gogo/protobuf/gogoproto"
+	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	types1 "github.com/tendermint/tendermint/abci/types"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -363,6 +368,77 @@ func (m *Result) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_Result proto.InternalMessageInfo
+
+type ApplicationQueryServiceClient interface {
+	// Query exposes the ABCIApplication Query method on BaseApp
+	Query(ctx context.Context, in *types1.RequestQuery, opts ...grpc.CallOption) (*types1.ResponseQuery, error)
+}
+
+type applicationQueryServiceClient struct {
+	cc grpc1.ClientConn
+}
+
+func NewApplicationQueryServiceClient(cc grpc1.ClientConn) ApplicationQueryServiceClient {
+	return &applicationQueryServiceClient{cc}
+}
+
+func (c *applicationQueryServiceClient) Query(ctx context.Context, in *types1.RequestQuery, opts ...grpc.CallOption) (*types1.ResponseQuery, error) {
+	out := new(types1.ResponseQuery)
+	err := c.cc.Invoke(ctx, "/cosmos.base.abci.v1beta1.ApplicationQueryService/Query", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ApplicationQueryServiceServer is the server API for ApplicationQueryService service.
+type ApplicationQueryServiceServer interface {
+	// Query exposes the ABCIApplication Query method on BaseApp
+	Query(context.Context, *types1.RequestQuery) (*types1.ResponseQuery, error)
+}
+
+// UnimplementedApplicationQueryServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedApplicationQueryServiceServer struct {
+}
+
+func (*UnimplementedApplicationQueryServiceServer) Query(ctx context.Context, req *types1.RequestQuery) (*types1.ResponseQuery, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
+}
+
+func RegisterApplicationQueryServiceServer(s grpc1.Server, srv ApplicationQueryServiceServer) {
+	s.RegisterService(&_ApplicationQueryService_serviceDesc, srv)
+}
+
+func _ApplicationQueryService_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(types1.RequestQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ApplicationQueryServiceServer).Query(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/cosmos.base.abci.v1beta1.ApplicationQueryService/Query",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ApplicationQueryServiceServer).Query(ctx, req.(*types1.RequestQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _ApplicationQueryService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "cosmos.base.abci.v1beta1.ApplicationQueryService",
+	HandlerType: (*ApplicationQueryServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Query",
+			Handler:    _ApplicationQueryService_Query_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "cosmos/base/abci/v1beta1/abci.proto",
+}
 
 // SimulationResponse defines the response generated when a transaction is
 // successfully simulated.

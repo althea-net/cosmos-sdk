@@ -142,3 +142,9 @@ message SearchTxsResult {
   // List of txs in current page
   repeated TxResponse txs = 6;
 }
+
+// ApplicationQueryService exposes the ABCIApplication Query method on BaseApp
+service ApplicationQueryService {
+  // Query exposes the ABCIApplication Query method on BaseApp
+  rpc Query(tendermint.abci.RequestQuery) returns (tendermint.abci.ResponseQuery);
+}

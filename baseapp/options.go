@@ -235,3 +235,11 @@ func (app *BaseApp) SetStreamingService(s StreamingService) {
 func (app *BaseApp) SetTxDecoder(txDecoder sdk.TxDecoder) {
 	app.txDecoder = txDecoder
 }
+
+// ApplyCrisisVerifyHaltsNodeFlag updates the baseapp runTxRecoveryHandler to allow a failed
+// crisis MsgVerifyInvariants to halt the node on failure if the crisis flag has been provided
+func (app *BaseApp) ApplyCrisisVerifyHaltsNodeFlag(optionalFlagVerifyHaltsNode bool) {
+	if optionalFlagVerifyHaltsNode {
+		app.AddRunTxRecoveryHandler(newCrisisInvariantsHaltNodeRecoveryHandler())
+	}
+}

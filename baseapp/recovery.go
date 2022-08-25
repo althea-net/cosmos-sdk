@@ -75,3 +75,21 @@ func newDefaultRecoveryMiddleware() recoveryMiddleware {
 
 	return newRecoveryMiddleware(handler, nil)
 }
+
+// newCrisisVerifyInvariantsHaltChainRecoveryHandler creates a RecoveryHandler to halt the node on a MsgVerifyInvariant
+// failure for app.runTx method.
+func newCrisisInvariantsHaltNodeRecoveryHandler() RecoveryHandler {
+	return func(recoveryObj interface{}) error {
+		err, ok := recoveryObj.(sdkerrors.ErrorInvariantFailure)
+		if !ok {
+			return nil
+		}
+
+		// Panic instead of returning an error in order to halt the node
+		panic(sdkerrors.Wrap(
+			sdkerrors.ErrInvariantFailure, fmt.Sprintf(
+				"This node will halt! invariant failed to execute: %v", err.Descriptor,
+			),
+		))
+	}
+}

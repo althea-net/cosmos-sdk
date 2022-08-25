@@ -154,6 +154,8 @@ func NewBaseApp(
 		fauxMerkleMode:   false,
 	}
 
+	app.runTxRecoveryMiddleware = newDefaultRecoveryMiddleware()
+
 	for _, option := range options {
 		option(app)
 	}
@@ -161,8 +163,6 @@ func NewBaseApp(
 	if app.interBlockCache != nil {
 		app.cms.SetInterBlockCache(app.interBlockCache)
 	}
-
-	app.runTxRecoveryMiddleware = newDefaultRecoveryMiddleware()
 
 	return app
 }

@@ -167,6 +167,16 @@ var (
 	// supplied.
 	ErrInvalidGasLimit = Register(RootCodespace, 41, "invalid gas limit")
 
+	// ErrInvariantFailure should only be used when a crisis invariant has failed
+	ErrInvariantFailure = Register(RootCodespace, 42, "invariant failure")
+
 	// ErrPanic should only be set when we recovering from a panic
 	ErrPanic = errorsmod.ErrPanic
 )
+
+// ErrorInvariantFailure defines an error thrown when a MsgVerifyInvariant fails
+// This error is used as a signal to the baseapp runTxRecoveryMiddleware to halt the node if using the
+// CrisisInvariantsHaltNode recovery middleware
+type ErrorInvariantFailure struct {
+	Descriptor string
+}

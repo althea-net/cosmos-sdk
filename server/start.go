@@ -50,6 +50,7 @@ const (
 	FlagUnsafeSkipUpgrades = "unsafe-skip-upgrades"
 	FlagTrace              = "trace"
 	FlagInvCheckPeriod     = "inv-check-period"
+	FlagInvHaltNode        = "inv-halt-node"
 
 	FlagPruning           = "pruning"
 	FlagPruningKeepRecent = "pruning-keep-recent"

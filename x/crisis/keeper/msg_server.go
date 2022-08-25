@@ -45,11 +45,11 @@ func (k *Keeper) VerifyInvariant(goCtx context.Context, msg *types.MsgVerifyInva
 	}
 
 	if stop {
-		// Currently, because the chain halts here, this transaction will never be included in the
+		// If the baseapp's runTxRecoveryMiddleware is set to newCrisisInvariantsHaltNodeRecoveryMiddleware() then this
+		// particular panic will halt the node. So then this transaction will never be included in the
 		// blockchain thus the constant fee will have never been deducted. Thus no refund is required.
 
-		// TODO replace with circuit breaker
-		panic(res)
+		panic(errors.ErrorInvariantFailure{Descriptor: res})
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{

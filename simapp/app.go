@@ -86,6 +86,7 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	"github.com/spf13/cast"
 )
 
 var (
@@ -230,6 +231,7 @@ func NewSimApp(
 	}
 
 	app.App = appBuilder.Build(logger, db, traceStore, baseAppOptions...)
+	app.BaseApp.ApplyCrisisVerifyHaltsNodeFlag(cast.ToBool(appOpts.Get(crisis.OptionalFlagVerifyHaltsNode)))
 
 	// configure state listening capabilities using AppOptions
 	// we are doing nothing with the returned streamingServices and waitGroup in this case

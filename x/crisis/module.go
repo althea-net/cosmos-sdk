@@ -28,7 +28,8 @@ var (
 
 // Module init related flags
 const (
-	FlagSkipGenesisInvariants = "x-crisis-skip-assert-invariants"
+	FlagSkipGenesisInvariants   = "x-crisis-skip-assert-invariants"
+	OptionalFlagVerifyHaltsNode = "x-crisis-verify-halts-node"
 )
 
 // AppModuleBasic defines the basic application module used by the crisis module.
@@ -108,6 +109,11 @@ func NewAppModule(keeper *keeper.Keeper, skipGenesisInvariants bool) AppModule {
 // AddModuleInitFlags implements servertypes.ModuleInitFlags interface.
 func AddModuleInitFlags(startCmd *cobra.Command) {
 	startCmd.Flags().Bool(FlagSkipGenesisInvariants, false, "Skip x/crisis invariants check on startup")
+}
+
+// AddModuleInitFlags adds opt-in flags
+func AddOptionalModuleInitFlags(startCmd *cobra.Command) {
+	startCmd.Flags().Bool(OptionalFlagVerifyHaltsNode, false, "MsgVerifyInvariant failures will halt this node")
 }
 
 // Name returns the crisis module's name.

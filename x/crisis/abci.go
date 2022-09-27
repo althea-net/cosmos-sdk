@@ -13,9 +13,20 @@ import (
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyEndBlocker)
 
+	haltWhenNecessary(k)
+
 	if k.InvCheckPeriod() == 0 || ctx.BlockHeight()%int64(k.InvCheckPeriod()) != 0 {
 		// skip running the invariant check
 		return
 	}
 	k.AssertInvariants(ctx)
+
+	haltWhenNecessary(k)
+}
+
+// haltWhenNecssary will halt the chain if it is configured to do so AND an invariant has failed
+func haltWhenNecessary(k keeper.Keeper) {
+	if k.MustHalt() { // An invariant is broken AND the chain is configured to halt on an invariant failure
+		panic("Crisis module: invariant broken - chain is halting immediately!")
+	}
 }

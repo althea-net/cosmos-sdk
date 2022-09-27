@@ -7,9 +7,10 @@ import (
 )
 
 // NewGenesisState creates a new GenesisState object
-func NewGenesisState(constantFee sdk.Coin) *GenesisState {
+func NewGenesisState(constantFee sdk.Coin, mustHalt bool) *GenesisState {
 	return &GenesisState{
 		ConstantFee: constantFee,
+		MustHalt:    mustHalt,
 	}
 }
 
@@ -17,6 +18,7 @@ func NewGenesisState(constantFee sdk.Coin) *GenesisState {
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
 		ConstantFee: sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000)),
+		MustHalt:    false,
 	}
 }
 

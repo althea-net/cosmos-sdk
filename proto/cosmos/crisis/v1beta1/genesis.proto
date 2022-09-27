@@ -12,4 +12,7 @@ message GenesisState {
   // module.
   cosmos.base.v1beta1.Coin constant_fee = 3
       [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"constant_fee\""];
+  // must_halt is used to halt the chain in endblocker after an invariant failure,
+  // only considered if invHaltChain = true
+  bool must_halt = 4;
 }

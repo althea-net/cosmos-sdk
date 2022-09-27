@@ -16,6 +16,8 @@ type Keeper struct {
 	routes         []types.InvarRoute
 	paramSpace     paramtypes.Subspace
 	invCheckPeriod uint
+	invHaltNode    bool
+	mustHalt       bool
 
 	supplyKeeper types.SupplyKeeper
 
@@ -24,7 +26,7 @@ type Keeper struct {
 
 // NewKeeper creates a new Keeper object
 func NewKeeper(
-	paramSpace paramtypes.Subspace, invCheckPeriod uint, supplyKeeper types.SupplyKeeper,
+	paramSpace paramtypes.Subspace, invCheckPeriod uint, invHaltNode bool, supplyKeeper types.SupplyKeeper,
 	feeCollectorName string,
 ) Keeper {
 
@@ -37,6 +39,8 @@ func NewKeeper(
 		routes:           make([]types.InvarRoute, 0),
 		paramSpace:       paramSpace,
 		invCheckPeriod:   invCheckPeriod,
+		invHaltNode:      invHaltNode,
+		mustHalt:         false,
 		supplyKeeper:     supplyKeeper,
 		feeCollectorName: feeCollectorName,
 	}
@@ -78,6 +82,9 @@ func (k Keeper) AssertInvariants(ctx sdk.Context) {
 	for i, ir := range invarRoutes {
 		logger.Info("asserting crisis invariants", "inv", fmt.Sprint(i+1, "/", n), "name", ir.FullRoute())
 		if res, stop := ir.Invar(ctx); stop {
+			if k.InvHaltNode() {
+				k.mustHalt = true // The chain will halt on the next EndBlocker because an invariant failed
+			}
 			// TODO: Include app name as part of context to allow for this to be
 			// variable.
 			panic(fmt.Errorf("invariant broken: %s\n"+
@@ -92,6 +99,12 @@ func (k Keeper) AssertInvariants(ctx sdk.Context) {
 
 // InvCheckPeriod returns the invariant checks period.
 func (k Keeper) InvCheckPeriod() uint { return k.invCheckPeriod }
+
+// InvHaltNode returns whether invariants halt this node
+func (k Keeper) InvHaltNode() bool { return k.invHaltNode }
+
+// MustHalt returns whether the chain must halt in EndBlocker
+func (k Keeper) MustHalt() bool { return k.invHaltNode && k.mustHalt }
 
 // SendCoinsFromAccountToFeeCollector transfers amt to the fee collector account.
 func (k Keeper) SendCoinsFromAccountToFeeCollector(ctx sdk.Context, senderAddr sdk.AccAddress, amt sdk.Coins) error {

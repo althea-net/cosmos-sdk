@@ -3333,6 +3333,7 @@ GenesisState defines the crisis module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `constant_fee` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) |  | constant_fee is the fee used to verify the invariant in the crisis module. |
+| `must_halt` | [bool](#bool) |  | must_halt is used to halt the chain in endblocker after an invariant failure, only considered if invHaltChain = true |
 
 
 

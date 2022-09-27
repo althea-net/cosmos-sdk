@@ -43,10 +43,13 @@ func (k Keeper) VerifyInvariant(goCtx context.Context, msg *types.MsgVerifyInvar
 	}
 
 	if stop {
-		// Currently, because the chain halts here, this transaction will never be included in the
-		// blockchain thus the constant fee will have never been deducted. Thus no refund is required.
+		// If the chain is configured to halt on an invariant failure, the chain will panic in EndBlocker,
+		// and this transaction will never be included in chain state,
+		// thus the constant fee will have never been deducted. Thus no refund is required.
+		if k.InvHaltNode() {
+			k.mustHalt = true
+		}
 
-		// TODO replace with circuit breaker
 		panic(res)
 	}
 

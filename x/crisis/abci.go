@@ -18,4 +18,8 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		return
 	}
 	k.AssertInvariants(ctx)
+
+	if k.MustHalt() { // An invariant is broken AND the chain is configured to halt on an invariant failure
+		panic("Crisis module: invariant broken - chain is halting immediately!")
+	}
 }

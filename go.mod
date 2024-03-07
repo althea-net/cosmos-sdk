@@ -25,7 +25,7 @@ require (
 	github.com/gogo/gateway v1.1.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/mock v1.6.0
-	github.com/golang/protobuf v1.5.2
+	github.com/golang/protobuf v1.5.4
 	github.com/golangci/golangci-lint v1.49.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/handlers v1.5.1
@@ -60,7 +60,7 @@ require (
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
 	google.golang.org/genproto v0.0.0-20220725144611-272f38e5d71b
 	google.golang.org/grpc v1.49.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.33.0
 	pgregory.net/rapid v0.5.2
 	sigs.k8s.io/yaml v1.3.0
 )
